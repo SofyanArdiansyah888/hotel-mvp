@@ -1,8 +1,8 @@
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Modal } from '@/components/ui/modal'
 import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { PageHeader } from '@/components/PageHeader'
 import { Spinner } from '@/components/ui/spinner'
@@ -23,6 +23,7 @@ export function RoomsListPage() {
   const [roomTypeId, setRoomTypeId] = React.useState('')
   const [isActive, setIsActive] = React.useState(true)
   const [formError, setFormError] = React.useState<string | null>(null)
+  const [modalOpen, setModalOpen] = React.useState(false)
 
   const query = useRoomsListQuery({ page, limit: 10, search: search || undefined })
   const createMutation = useCreateRoomMutation()
@@ -41,6 +42,10 @@ export function RoomsListPage() {
     setIsActive(true)
     setFormError(null)
   }
+  function openCreate() {
+    resetForm()
+    setModalOpen(true)
+  }
 
   function loadForEdit(item: Room) {
     setEditing(item)
@@ -48,6 +53,7 @@ export function RoomsListPage() {
     setRoomTypeId(item.roomTypeId)
     setIsActive(item.isActive)
     setFormError(null)
+    setModalOpen(true)
   }
 
   async function submitForm() {
@@ -64,6 +70,7 @@ export function RoomsListPage() {
         await createMutation.mutateAsync(payload)
       }
       resetForm()
+      setModalOpen(false)
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Gagal menyimpan room.')
     }
@@ -88,18 +95,19 @@ export function RoomsListPage() {
               }}
               className="w-56"
             />
-            <Button variant="secondary" onClick={resetForm}>
+            <Button variant="secondary" onClick={openCreate}>
               Tambah Baru
             </Button>
           </div>
         }
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{editing ? 'Edit Room' : 'Create Room'}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-2">
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editing ? 'Edit Room' : 'Create Room'}
+      >
+        <div className="grid gap-3 md:grid-cols-2">
           <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Code" />
           <Input
             value={roomTypeId}
@@ -130,8 +138,8 @@ export function RoomsListPage() {
               {formError}
             </div>
           ) : null}
-        </CardContent>
-      </Card>
+        </div>
+      </Modal>
 
       <div className="space-y-3">
         {query.isLoading ? (

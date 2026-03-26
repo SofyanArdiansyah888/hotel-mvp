@@ -1,8 +1,8 @@
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Modal } from '@/components/ui/modal'
 import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { PageHeader } from '@/components/PageHeader'
 import { Spinner } from '@/components/ui/spinner'
@@ -29,6 +29,7 @@ export function ReservationsListPage() {
   const [checkOutDate, setCheckOutDate] = React.useState('')
   const [notes, setNotes] = React.useState('')
   const [formError, setFormError] = React.useState<string | null>(null)
+  const [modalOpen, setModalOpen] = React.useState(false)
 
   const query = useReservationsListQuery({
     page,
@@ -57,6 +58,10 @@ export function ReservationsListPage() {
     setNotes('')
     setFormError(null)
   }
+  function openCreate() {
+    resetForm()
+    setModalOpen(true)
+  }
 
   function loadForEdit(r: Reservation) {
     setEditing(r)
@@ -68,6 +73,7 @@ export function ReservationsListPage() {
     setCheckOutDate(r.checkOutDate)
     setNotes(r.notes ?? '')
     setFormError(null)
+    setModalOpen(true)
   }
 
   async function submitForm() {
@@ -93,6 +99,7 @@ export function ReservationsListPage() {
         await createMutation.mutateAsync(payload)
       }
       resetForm()
+      setModalOpen(false)
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Gagal menyimpan reservation.')
     }
@@ -131,18 +138,20 @@ export function ReservationsListPage() {
               }}
               className="w-60"
             />
-            <Button variant="secondary" onClick={resetForm}>
+            <Button variant="secondary" onClick={openCreate}>
               Tambah Baru
             </Button>
           </div>
         }
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{editing ? 'Edit Reservation' : 'Create Reservation'}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-3">
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editing ? 'Edit Reservation' : 'Create Reservation'}
+        className="max-w-4xl"
+      >
+        <div className="grid gap-3 md:grid-cols-3">
           <Input placeholder="roomId" value={roomId} onChange={(e) => setRoomId(e.target.value)} />
           <Input
             placeholder="Guest name"
@@ -195,8 +204,8 @@ export function ReservationsListPage() {
               {formError}
             </div>
           ) : null}
-        </CardContent>
-      </Card>
+        </div>
+      </Modal>
 
       <div className="space-y-3">
         {query.isLoading ? (

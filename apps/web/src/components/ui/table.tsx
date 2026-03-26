@@ -2,14 +2,22 @@ import { cn } from '@/lib/utils'
 
 export function Table({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="w-full overflow-x-auto rounded-lg border border-border">
+    <div className="w-full overflow-x-auto rounded-xl border border-border/70 bg-card/90 shadow-sm">
       <table className={cn('w-full caption-bottom text-sm', className)} {...props} />
     </div>
   )
 }
 
 export function THead({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
-  return <thead className={cn('bg-muted/40 text-muted-foreground', className)} {...props} />
+  return (
+    <thead
+      className={cn(
+        'bg-gradient-to-r from-muted/60 via-muted/40 to-muted/20 text-muted-foreground',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 export function TBody({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
@@ -17,7 +25,7 @@ export function TBody({ className, ...props }: React.HTMLAttributes<HTMLTableSec
 }
 
 export function TR({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) {
-  return <tr className={cn('hover:bg-muted/30', className)} {...props} />
+  return <tr className={cn('transition-colors hover:bg-muted/35', className)} {...props} />
 }
 
 export function TH({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) {

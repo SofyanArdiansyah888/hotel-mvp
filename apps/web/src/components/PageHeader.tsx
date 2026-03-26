@@ -7,14 +7,19 @@ export function PageHeader(props: {
   className?: string
 }) {
   return (
-    <div className={cn('flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between', props.className)}>
+    <div
+      className={cn(
+        'rounded-2xl border border-border/70 bg-card/80 px-5 py-4 shadow-sm backdrop-blur sm:flex sm:items-end sm:justify-between',
+        props.className,
+      )}
+    >
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">{props.title}</h1>
         {props.description ? (
           <p className="text-sm text-muted-foreground">{props.description}</p>
         ) : null}
       </div>
-      {props.right ? <div className="flex items-center gap-2">{props.right}</div> : null}
+      {props.right ? <div className="mt-3 flex items-center gap-2 sm:mt-0">{props.right}</div> : null}
     </div>
   )
 }

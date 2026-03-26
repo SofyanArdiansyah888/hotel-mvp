@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -51,9 +52,17 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     margin: 0;
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
     background-image:
       radial-gradient(circle at 15% 10%, hsl(var(--accent) / 0.15), transparent 30%),
       radial-gradient(circle at 85% 90%, hsl(var(--primary) / 0.15), transparent 35%);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Sora', ui-sans-serif, sans-serif;
+    letter-spacing: -0.02em;
   }
 
   * {
