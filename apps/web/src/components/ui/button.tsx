@@ -8,15 +8,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow-sm hover:brightness-105 hover:shadow',
+        default:
+          'bg-[linear-gradient(135deg,var(--primary),var(--primary-container))] text-[var(--on-primary)] hover:brightness-110',
         secondary:
-          'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:shadow',
+          'bg-[var(--secondary-container)] text-[var(--on-secondary-container)] hover:brightness-105',
         outline:
-          'border border-border bg-background/95 text-foreground shadow-sm hover:bg-muted hover:shadow',
+          'bg-[color-mix(in_oklab,var(--surface-container-lowest),transparent_6%)] text-[var(--on-surface)] outline outline-1 outline-[color-mix(in_oklab,var(--outline-variant),transparent_80%)] hover:bg-[var(--surface-container-low)]',
         destructive:
-          'bg-destructive text-destructive-foreground shadow-sm hover:brightness-95 hover:shadow',
-        ghost: 'hover:bg-muted/80',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'bg-[color-mix(in_oklab,var(--danger),#ffffff_12%)] text-white hover:brightness-105',
+        ghost: 'text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-low)]',
+        link:
+          'text-[var(--primary-container)] underline-offset-4 hover:text-[var(--primary)] hover:underline',
       },
       size: {
         default: 'h-10 px-4 py-2',

@@ -120,43 +120,54 @@ export function RoomTypesListPage() {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editing ? 'Edit Room Type' : 'Create Room Type'}
+        title={editing ? 'Ubah Tipe Kamar' : 'Tipe Kamar Baru'}
       >
-        <div className="grid gap-3 md:grid-cols-2">
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-          <Input
-            type="number"
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value)}
-            placeholder="Capacity"
-          />
-          <Input
-            className="md:col-span-2"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description (opsional)"
-          />
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
+        <p className="mb-5 text-sm text-on-surface-variant">
+          Kelola kategori kamar untuk grouping dan pricing reservation.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Room Type Name
+            </label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Deluxe King" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Capacity
+            </label>
+            <Input
+              type="number"
+              value={capacity}
+              onChange={(e) => setCapacity(e.target.value)}
+              placeholder="2"
             />
-            Active
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Description
+            </label>
+            <Input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Deskripsi tipe kamar (opsional)"
+            />
+          </div>
+          <label className="inline-flex items-center gap-2 text-sm text-on-surface-variant md:col-span-2">
+            <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+            Tandai tipe kamar aktif
           </label>
-          <div className="flex items-center gap-2">
-            <Button onClick={submitForm} disabled={saving}>
-              {saving ? <Spinner /> : null}
-              {editing ? 'Update' : 'Create'}
+          <div className="md:col-span-2 flex items-center justify-end gap-3 pt-2">
+            <Button variant="ghost" onClick={() => setModalOpen(false)} disabled={saving}>
+              Batalkan
             </Button>
-            {editing ? (
-              <Button variant="outline" onClick={resetForm} disabled={saving}>
-                Batal
-              </Button>
-            ) : null}
+            <Button onClick={submitForm} disabled={saving} className="min-w-40">
+              {saving ? <Spinner /> : null}
+              {editing ? 'Simpan Perubahan' : 'Simpan Tipe Kamar'}
+            </Button>
           </div>
           {formError ? (
-            <div className="md:col-span-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm">
+            <div className="md:col-span-2 rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
               {formError}
             </div>
           ) : null}

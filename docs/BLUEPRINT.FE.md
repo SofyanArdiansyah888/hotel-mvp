@@ -22,6 +22,7 @@ Dokumentasi frontend sekarang dipisah **per fitur/modul**. Gunakan dokumen index
 - **Base URL**: `VITE_API_URL`
 - **Format tanggal**: `YYYY-MM-DD` untuk check-in/out (MVP).
 - **Pagination**: ikuti shape response dari `nestjs-paginate` (`data`, `meta`, `links` bila ada).
+- **Design System**: acuan UI/UX + tokens ada di [`design-system-elevated-concierge.md`](./design-system-elevated-concierge.md)
 
 ## Halaman / alur
 

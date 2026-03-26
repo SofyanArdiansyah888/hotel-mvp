@@ -148,59 +148,95 @@ export function ReservationsListPage() {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editing ? 'Edit Reservation' : 'Create Reservation'}
-        className="max-w-4xl"
+        title={editing ? 'Ubah Pemesanan' : 'Pemesanan Baru'}
+        className="max-w-3xl"
       >
-        <div className="grid gap-3 md:grid-cols-3">
-          <Input placeholder="roomId" value={roomId} onChange={(e) => setRoomId(e.target.value)} />
-          <Input
-            placeholder="Guest name"
-            value={guestName}
-            onChange={(e) => setGuestName(e.target.value)}
-          />
-          <Input
-            placeholder="Guest email"
-            value={guestEmail}
-            onChange={(e) => setGuestEmail(e.target.value)}
-          />
-          <Input
-            placeholder="Guest phone"
-            value={guestPhone}
-            onChange={(e) => setGuestPhone(e.target.value)}
-          />
-          <input
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
-            type="date"
-            value={checkInDate}
-            onChange={(e) => setCheckInDate(e.target.value)}
-            aria-label="Check-in date"
-          />
-          <input
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
-            type="date"
-            value={checkOutDate}
-            onChange={(e) => setCheckOutDate(e.target.value)}
-            aria-label="Check-out date"
-          />
-          <Input
-            className="md:col-span-3"
-            placeholder="Notes (opsional)"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          <div className="md:col-span-3 flex items-center gap-2">
-            <Button onClick={submitForm} disabled={saving}>
-              {saving ? <Spinner /> : null}
-              {editing ? 'Update' : 'Create'}
+        <p className="mb-5 text-sm text-on-surface-variant">
+          Silakan lengkapi detail reservasi tamu di bawah ini.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Guest Name
+            </label>
+            <Input
+              placeholder="Masukkan nama lengkap tamu"
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Email Address
+            </label>
+            <Input
+              placeholder="contoh@domain.com"
+              value={guestEmail}
+              onChange={(e) => setGuestEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Room ID
+            </label>
+            <Input placeholder="UUID room" value={roomId} onChange={(e) => setRoomId(e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Contact Number
+            </label>
+            <Input
+              placeholder="08xxxxxxxxxx"
+              value={guestPhone}
+              onChange={(e) => setGuestPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Stay Dates
+            </label>
+            <div className="grid gap-3 md:grid-cols-2">
+              <Input
+                type="date"
+                value={checkInDate}
+                onChange={(e) => setCheckInDate(e.target.value)}
+                aria-label="Check-in date"
+              />
+              <Input
+                type="date"
+                value={checkOutDate}
+                onChange={(e) => setCheckOutDate(e.target.value)}
+                aria-label="Check-out date"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+              Notes
+            </label>
+            <Input
+              placeholder="Catatan tambahan (opsional)"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </div>
+
+          <div className="md:col-span-2 flex items-center justify-end gap-3 pt-2">
+            <Button variant="ghost" onClick={() => setModalOpen(false)} disabled={saving}>
+              Batalkan
             </Button>
-            {editing ? (
-              <Button variant="outline" onClick={resetForm} disabled={saving}>
-                Batal
-              </Button>
-            ) : null}
+            <Button onClick={submitForm} disabled={saving} className="min-w-44">
+              {saving ? <Spinner /> : null}
+              {editing ? 'Simpan Perubahan' : 'Simpan Pemesanan'}
+            </Button>
           </div>
           {formError ? (
-            <div className="md:col-span-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm">
+            <div className="md:col-span-2 rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
               {formError}
             </div>
           ) : null}
