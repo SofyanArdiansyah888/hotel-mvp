@@ -1,0 +1,65 @@
+---
+description: Backend folder structure (apps/api) & NestJS module conventions per docs
+globs: apps/api/**
+alwaysApply: true
+---
+
+# Backend folder structure (apps/api)
+
+Ikuti struktur target dari docs `docs/be/README.md`:
+
+```
+apps/api/
+  src/
+    app.module.ts
+    main.ts
+    config/
+      env.validation.ts
+      typeorm.config.ts
+    common/
+      pagination/
+      errors/
+    room-types/
+      room-types.module.ts
+      room-types.controller.ts
+      room-types.service.ts
+      dto/
+      entities/
+    rooms/
+      rooms.module.ts
+      rooms.controller.ts
+      rooms.service.ts
+      dto/
+      entities/
+    reservations/
+      reservations.module.ts
+      reservations.controller.ts
+      reservations.service.ts
+      dto/
+      entities/
+```
+
+## Konvensi API & domain (MVP)
+
+- **Base path**: `/v1`
+- **Tanggal reservation**: string `YYYY-MM-DD` (bukan datetime) untuk MVP.
+- **Status reservation**: `PENDING | CONFIRMED | CANCELLED`
+- **Pagination**: gunakan `nestjs-paginate` dan konsisten dengan shape (`data`, `meta`, `links` bila ada).
+- **Human-friendly numbering**: gunakan `...Number` seperti `reservationNumber` (`RSV-YYYY-000001`) dan tetap pakai `id` (uuid) untuk internal.
+
+## Aturan bisnis kunci (wajib)
+
+- Validasi: `checkInDate < checkOutDate`
+- Overlap reservation untuk `roomId` yang sama (abaikan `CANCELLED`):
+  - overlap jika `checkInDate < other.checkOutDate && other.checkInDate < checkOutDate`
+  - saat update, overlap check harus ignore record yang sedang di-update
+- Jika reservation sudah `CANCELLED`:
+  - **tidak boleh** ubah `roomId`, `checkInDate`, `checkOutDate`
+  - **boleh** ubah `notes` (dan field non-jadwal jika diputuskan)
+
+## Error/HTTP rules (konsisten)
+
+- DTO validation error → 400 dengan pesan jelas.
+- Overlap reservation → 409.
+- Cancel reservation yang sudah `CANCELLED` → 409.
+- Coba ubah tanggal/kamar saat `CANCELLED` → 409.

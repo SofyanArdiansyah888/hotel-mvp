@@ -19,9 +19,7 @@ export function RoomsListPage() {
   const [search, setSearch] = React.useState('')
   const [page, setPage] = React.useState(1)
   const [editing, setEditing] = React.useState<Room | null>(null)
-  const [code, setCode] = React.useState('')
-  const [roomTypeId, setRoomTypeId] = React.useState('')
-  const [isActive, setIsActive] = React.useState(true)
+  const [form, setForm] = React.useState({ code: '', roomTypeId: '', isActive: true })
   const [formError, setFormError] = React.useState<string | null>(null)
   const [modalOpen, setModalOpen] = React.useState(false)
 
@@ -37,9 +35,7 @@ export function RoomsListPage() {
 
   function resetForm() {
     setEditing(null)
-    setCode('')
-    setRoomTypeId('')
-    setIsActive(true)
+    setForm({ code: '', roomTypeId: '', isActive: true })
     setFormError(null)
   }
   function openCreate() {
@@ -49,20 +45,18 @@ export function RoomsListPage() {
 
   function loadForEdit(item: Room) {
     setEditing(item)
-    setCode(item.code)
-    setRoomTypeId(item.roomTypeId)
-    setIsActive(item.isActive)
+    setForm({ code: item.code, roomTypeId: item.roomTypeId, isActive: item.isActive })
     setFormError(null)
     setModalOpen(true)
   }
 
   async function submitForm() {
     setFormError(null)
-    if (!code.trim() || !roomTypeId.trim()) {
+    if (!form.code.trim() || !form.roomTypeId.trim()) {
       setFormError('`code` dan `roomTypeId` wajib diisi.')
       return
     }
-    const payload = { code: code.trim(), roomTypeId: roomTypeId.trim(), isActive }
+    const payload = { code: form.code.trim(), roomTypeId: form.roomTypeId.trim(), isActive: form.isActive }
     try {
       if (editing) {
         await updateMutation.mutateAsync({ id: editing.id, input: payload })
@@ -115,7 +109,7 @@ export function RoomsListPage() {
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
               Room Code
             </label>
-            <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="A-101" />
+            <Input value={form.code} onChange={(e) => setForm(f => ({ ...f, code: e.target.value }))} placeholder="A-101" />
           </div>
 
           <div className="space-y-2">
@@ -123,14 +117,14 @@ export function RoomsListPage() {
               Room Type ID
             </label>
             <Input
-              value={roomTypeId}
-              onChange={(e) => setRoomTypeId(e.target.value)}
+              value={form.roomTypeId}
+              onChange={(e) => setForm(f => ({ ...f, roomTypeId: e.target.value }))}
               placeholder="uuid room type"
             />
           </div>
 
           <label className="inline-flex items-center gap-2 text-sm text-on-surface-variant md:col-span-2">
-            <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+            <input type="checkbox" checked={form.isActive} onChange={(e) => setForm(f => ({ ...f, isActive: e.target.checked }))} />
             Tandai kamar aktif
           </label>
 

@@ -1,4 +1,7 @@
+
+import { useState } from 'react'
 import { Link, Outlet, useRouterState } from '@tanstack/react-router'
+
 import {
   Bell,
   Bed,
@@ -9,22 +12,41 @@ import {
   LogIn,
   Search,
   Users,
+  User,
+  Receipt,
+  Percent,
+  BadgePercent,
+  FileText,
+  DollarSign,
+  FileCog,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
+
+const masterDataItems = [
+  { to: '/rooms', label: 'Rooms', icon: Bed },
+  { to: '/room-types', label: 'Room Types', icon: Users },
+  { to: '/customers', label: 'Customers', icon: User },
+  { to: '/charges', label: 'Charges', icon: Receipt },
+  { to: '/taxes', label: 'Taxes', icon: Percent },
+  { to: '/promotions', label: 'Promotions', icon: BadgePercent },
+]
+
 const navItems = [
   { to: '/', label: 'Dashboard', icon: ChartColumn },
-  { to: '/reservations', label: 'Bookings', icon: CalendarDays },
-  { to: '/rooms', label: 'Inventory', icon: Bed },
-  { to: '/room-types', label: 'Guests', icon: Users },
-  { to: '/pricing', label: 'Reports', icon: ChartColumn },
+  { to: '/reservations', label: 'Reservations', icon: CalendarDays },
+  { to: '/pricing', label: 'Pricing', icon: DollarSign },
   { to: '/calendar', label: 'Calendar', icon: CalendarDays },
+  { type: 'master-data', label: 'Master Data', icon: FileText, children: masterDataItems },
+  { to: '/invoices', label: 'Invoices', icon: FileText },
+  { to: '/mock-api', label: 'Mock API', icon: FileCog },
   { to: '/login', label: 'Login', icon: LogIn },
 ] as const
 
 export function AppShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const [masterOpen, setMasterOpen] = useState(false)
 
   return (
     <div className="min-h-dvh bg-surface text-on-surface">
@@ -39,8 +61,68 @@ export function AppShell() {
 
           <nav className="space-y-1 px-3 py-4">
             {navItems.map((item) => {
+              if (item.type === 'master-data' && Array.isArray(item.children)) {
+                // Cek jika salah satu submenu aktif
+                const isAnyActive = item.children.some(
+                  (sub) => pathname === sub.to || (sub.to !== '/' && pathname.startsWith(sub.to))
+                )
+                // Expand otomatis jika aktif
+                const expanded = masterOpen || isAnyActive
+                return (
+                  <div key="master-data" className="mb-1">
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls="master-data-menu"
+                      onClick={() => setMasterOpen((v) => !v)}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-semibold transition-all cursor-pointer',
+                        expanded
+                          ? 'bg-surface-container-lowest text-on-surface'
+                          : 'text-on-surface-variant hover:bg-surface-container-lowest/70 hover:text-on-surface',
+                      )}
+                    >
+                      <item.icon className="size-4" aria-hidden="true" />
+                      {item.label}
+                      <svg
+                        className={cn('ml-auto size-4 transition-transform', expanded ? 'rotate-90' : 'rotate-0')}
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path d="M7 7l3 3 3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                    {expanded && (
+                      <div id="master-data-menu" className="ml-6 mt-1 space-y-1">
+                        {item.children.map((sub) => {
+                          const SubIcon = sub.icon
+                          const subActive = pathname === sub.to || (sub.to !== '/' && pathname.startsWith(sub.to))
+                          return (
+                            <Link
+                              key={sub.to}
+                              to={sub.to}
+                              className={cn(
+                                'flex items-center gap-3 rounded-lg px-3 py-2 text-[15px] transition-all',
+                                subActive
+                                  ? 'bg-surface-container-lowest font-semibold text-on-surface'
+                                  : 'text-on-surface-variant hover:bg-surface-container-lowest/70 hover:text-on-surface',
+                              )}
+                            >
+                              <SubIcon className="size-4" aria-hidden="true" />
+                              {sub.label}
+                            </Link>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              }
+              // Menu biasa
               const Icon = item.icon
-              const active = pathname === item.to || (item.to !== '/' && pathname.startsWith(item.to))
+              const active = item.to && (pathname === item.to || (item.to !== '/' && pathname.startsWith(item.to)))
               return (
                 <Link
                   key={item.to}

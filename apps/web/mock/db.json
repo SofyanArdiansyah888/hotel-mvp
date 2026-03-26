@@ -1,0 +1,50 @@
+{
+  "room-types": [
+    {
+      "id": "rt-1",
+      "name": "Deluxe King",
+      "capacity": 2,
+      "description": "Spacious king room with city view",
+      "isActive": true
+    },
+    {
+      "id": "rt-2",
+      "name": "Executive Studio",
+      "capacity": 2,
+      "description": "Studio room for extended stays",
+      "isActive": true
+    }
+  ],
+  "rooms": [
+    { "id": "r-1", "roomTypeId": "rt-1", "code": "A-101", "isActive": true },
+    { "id": "r-2", "roomTypeId": "rt-1", "code": "A-102", "isActive": true },
+    { "id": "r-3", "roomTypeId": "rt-2", "code": "B-201", "isActive": true }
+  ],
+  "reservations": [
+    {
+      "id": "res-1",
+      "reservationNumber": "RSV-2026-000001",
+      "roomId": "r-1",
+      "guestName": "Elena Belova",
+      "guestEmail": "elena@example.com",
+      "guestPhone": "08123456789",
+      "checkInDate": "2026-04-01",
+      "checkOutDate": "2026-04-05",
+      "status": "CONFIRMED",
+      "notes": ""
+    },
+    {
+      "id": "res-2",
+      "reservationNumber": "RSV-2026-000002",
+      "roomId": "r-2",
+      "guestName": "Julian Moore",
+      "guestEmail": "julian@example.com",
+      "guestPhone": "08987654321",
+      "checkInDate": "2026-04-03",
+      "checkOutDate": "2026-04-04",
+      "status": "PENDING",
+      "notes": ""
+    }
+  ]
+}
+

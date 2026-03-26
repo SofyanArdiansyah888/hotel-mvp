@@ -21,15 +21,17 @@ export function ReservationsListPage() {
   const [status, setStatus] = React.useState<ReservationStatus | ''>('')
   const [filterRoomId, setFilterRoomId] = React.useState('')
   const [editing, setEditing] = React.useState<Reservation | null>(null)
-  const [roomId, setRoomId] = React.useState('')
-  const [guestName, setGuestName] = React.useState('')
-  const [guestEmail, setGuestEmail] = React.useState('')
-  const [guestPhone, setGuestPhone] = React.useState('')
-  const [checkInDate, setCheckInDate] = React.useState('')
-  const [checkOutDate, setCheckOutDate] = React.useState('')
-  const [notes, setNotes] = React.useState('')
   const [formError, setFormError] = React.useState<string | null>(null)
   const [modalOpen, setModalOpen] = React.useState(false)
+  const [form, setForm] = React.useState({
+    roomId: '',
+    guestName: '',
+    guestEmail: '',
+    guestPhone: '',
+    checkInDate: '',
+    checkOutDate: '',
+    notes: '',
+  })
 
   const query = useReservationsListQuery({
     page,
@@ -50,45 +52,52 @@ export function ReservationsListPage() {
   function resetForm() {
     setEditing(null)
     setRoomId('')
-    setGuestName('')
-    setGuestEmail('')
-    setGuestPhone('')
-    setCheckInDate('')
-    setCheckOutDate('')
-    setNotes('')
-    setFormError(null)
   }
   function openCreate() {
+    function resetForm() {
+      setEditing(null)
+      setForm({
+        roomId: '',
+        guestName: '',
+        guestEmail: '',
+        guestPhone: '',
+        checkInDate: '',
+        checkOutDate: '',
+        notes: '',
+      })
+      setFormError(null)
     resetForm()
     setModalOpen(true)
   }
 
-  function loadForEdit(r: Reservation) {
-    setEditing(r)
-    setRoomId(r.roomId)
-    setGuestName(r.guestName)
-    setGuestEmail(r.guestEmail ?? '')
-    setGuestPhone(r.guestPhone ?? '')
-    setCheckInDate(r.checkInDate)
     setCheckOutDate(r.checkOutDate)
     setNotes(r.notes ?? '')
+      setForm({
+        roomId: r.roomId,
+        guestName: r.guestName,
+        guestEmail: r.guestEmail ?? '',
+        guestPhone: r.guestPhone ?? '',
+        checkInDate: r.checkInDate,
+        checkOutDate: r.checkOutDate,
+        notes: r.notes ?? '',
+      })
     setFormError(null)
     setModalOpen(true)
   }
 
-  async function submitForm() {
+      if (!form.roomId.trim() || !form.guestName.trim() || !form.checkInDate || !form.checkOutDate) {
     setFormError(null)
     if (!roomId.trim() || !guestName.trim() || !checkInDate || !checkOutDate) {
       setFormError('roomId, guestName, checkInDate, checkOutDate wajib diisi.')
       return
     }
-
-    const payload = {
-      roomId: roomId.trim(),
-      guestName: guestName.trim(),
-      guestEmail: guestEmail.trim() || undefined,
-      guestPhone: guestPhone.trim() || undefined,
-      checkInDate,
+        roomId: form.roomId.trim(),
+        guestName: form.guestName.trim(),
+        guestEmail: form.guestEmail.trim() || undefined,
+        guestPhone: form.guestPhone.trim() || undefined,
+        checkInDate: form.checkInDate,
+        checkOutDate: form.checkOutDate,
+        notes: form.notes.trim() || undefined,
       checkOutDate,
       notes: notes.trim() || undefined,
     }
@@ -159,8 +168,8 @@ export function ReservationsListPage() {
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
               Guest Name
             </label>
-            <Input
-              placeholder="Masukkan nama lengkap tamu"
+                value={form.guestName}
+                onChange={e => setForm(f => ({ ...f, guestName: e.target.value }))}
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
             />
@@ -170,8 +179,8 @@ export function ReservationsListPage() {
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
               Email Address
             </label>
-            <Input
-              placeholder="contoh@domain.com"
+                value={form.guestEmail}
+                onChange={e => setForm(f => ({ ...f, guestEmail: e.target.value }))}
               value={guestEmail}
               onChange={(e) => setGuestEmail(e.target.value)}
             />
@@ -181,8 +190,8 @@ export function ReservationsListPage() {
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
               Room ID
             </label>
-            <Input placeholder="UUID room" value={roomId} onChange={(e) => setRoomId(e.target.value)} />
-          </div>
+                value={form.roomId}
+                onChange={e => setForm(f => ({ ...f, roomId: e.target.value }))}
 
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
@@ -192,8 +201,8 @@ export function ReservationsListPage() {
               placeholder="08xxxxxxxxxx"
               value={guestPhone}
               onChange={(e) => setGuestPhone(e.target.value)}
-            />
-          </div>
+                value={form.guestPhone}
+                onChange={e => setForm(f => ({ ...f, guestPhone: e.target.value }))}
 
           <div className="space-y-2 md:col-span-2">
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
@@ -204,14 +213,14 @@ export function ReservationsListPage() {
                 type="date"
                 value={checkInDate}
                 onChange={(e) => setCheckInDate(e.target.value)}
-                aria-label="Check-in date"
-              />
+                  value={form.checkInDate}
+                  onChange={e => setForm(f => ({ ...f, checkInDate: e.target.value }))}
               <Input
                 type="date"
                 value={checkOutDate}
                 onChange={(e) => setCheckOutDate(e.target.value)}
-                aria-label="Check-out date"
-              />
+                  value={form.checkOutDate}
+                  onChange={e => setForm(f => ({ ...f, checkOutDate: e.target.value }))}
             </div>
           </div>
 
@@ -223,8 +232,8 @@ export function ReservationsListPage() {
               placeholder="Catatan tambahan (opsional)"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-            />
-          </div>
+                value={form.notes}
+                onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
 
           <div className="md:col-span-2 flex items-center justify-end gap-3 pt-2">
             <Button variant="ghost" onClick={() => setModalOpen(false)} disabled={saving}>

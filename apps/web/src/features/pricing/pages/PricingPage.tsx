@@ -9,29 +9,32 @@ import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table'
 import { ApiError } from '@/lib/api'
 import { useQuoteMutation } from '@/features/pricing/hooks'
 
+
 export function PricingPage() {
-  const [roomTypeId, setRoomTypeId] = React.useState('')
-  const [checkInDate, setCheckInDate] = React.useState('')
-  const [checkOutDate, setCheckOutDate] = React.useState('')
-  const [promoCodesRaw, setPromoCodesRaw] = React.useState('')
+  const [form, setForm] = React.useState({
+    roomTypeId: '',
+    checkInDate: '',
+    checkOutDate: '',
+    promoCodesRaw: '',
+  })
   const [promoError, setPromoError] = React.useState<string | null>(null)
 
   const quote = useQuoteMutation()
 
   const promoCodes = React.useMemo(() => {
-    return promoCodesRaw
+    return form.promoCodesRaw
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean)
-  }, [promoCodesRaw])
+  }, [form.promoCodesRaw])
 
   async function onQuote() {
     setPromoError(null)
     try {
       await quote.mutateAsync({
-        roomTypeId,
-        checkInDate,
-        checkOutDate,
+        roomTypeId: form.roomTypeId,
+        checkInDate: form.checkInDate,
+        checkOutDate: form.checkOutDate,
         promoCodes: promoCodes.length ? promoCodes : undefined,
       })
     } catch (err) {
@@ -64,45 +67,42 @@ export function PricingPage() {
         <CardContent className="grid gap-4">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
             <Input
-              aria-label="roomTypeId"
-              placeholder="roomTypeId"
-              value={roomTypeId}
-              onChange={(e) => setRoomTypeId(e.target.value)}
+              value={form.roomTypeId}
+              onChange={e => setForm(f => ({ ...f, roomTypeId: e.target.value }))}
+              placeholder="Room Type ID"
+              className="w-40"
             />
-            <input
-              className="h-10 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+            <Input
               type="date"
-              value={checkInDate}
-              onChange={(e) => setCheckInDate(e.target.value)}
-              aria-label="checkInDate"
+              value={form.checkInDate}
+              onChange={e => setForm(f => ({ ...f, checkInDate: e.target.value }))}
+              className="w-36"
             />
-            <input
-              className="h-10 rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+            <Input
               type="date"
-              value={checkOutDate}
-              onChange={(e) => setCheckOutDate(e.target.value)}
-              aria-label="checkOutDate"
+              value={form.checkOutDate}
+              onChange={e => setForm(f => ({ ...f, checkOutDate: e.target.value }))}
+              className="w-36"
             />
             <Button
               onClick={onQuote}
               disabled={
                 quote.isPending ||
-                !roomTypeId.trim() ||
-                !checkInDate ||
-                !checkOutDate
+                !form.roomTypeId.trim() ||
+                !form.checkInDate ||
+                !form.checkOutDate
               }
             >
               {quote.isPending ? <Spinner /> : null}
               {quote.isPending ? 'Menghitung…' : 'Hitung'}
             </Button>
           </div>
-
           <div className="grid gap-2">
             <Input
-              aria-label="promoCodes"
-              placeholder="Promo codes (pisahkan dengan koma), contoh: WEEKEND10, IDULFITRI"
-              value={promoCodesRaw}
-              onChange={(e) => setPromoCodesRaw(e.target.value)}
+              value={form.promoCodesRaw}
+              onChange={e => setForm(f => ({ ...f, promoCodesRaw: e.target.value }))}
+              placeholder="Promo codes (comma separated)"
+              className="w-60"
             />
             {promoError ? (
               <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm">
@@ -110,7 +110,6 @@ export function PricingPage() {
               </div>
             ) : null}
           </div>
-
           {quote.isError ? (
             <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm">
               {(quote.error as ApiError).message || 'Gagal mengambil quote.'}

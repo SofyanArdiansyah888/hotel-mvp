@@ -12,19 +12,20 @@ type Props = {
   onSuccess?: () => void
 }
 
+
 export function LoginForm({ onSuccess }: Props) {
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [form, setForm] = React.useState({ email: '', password: '' })
   const [formError, setFormError] = React.useState<string | null>(null)
 
   const mutation = useLoginMutation()
+
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setFormError(null)
 
     try {
-      await mutation.mutateAsync({ email, password })
+      await mutation.mutateAsync({ email: form.email, password: form.password })
       onSuccess?.()
     } catch (err) {
       const message =
@@ -60,8 +61,8 @@ export function LoginForm({ onSuccess }: Props) {
               inputMode="email"
               autoComplete="email"
               placeholder="admin@hotel.local"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               className="border-[#dce1f2] bg-white text-[#1d245f] placeholder:text-[#99a1bf] focus-visible:ring-[#8f98d8]"
               required
             />
@@ -77,8 +78,8 @@ export function LoginForm({ onSuccess }: Props) {
               type="password"
               autoComplete="current-password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={form.password}
+              onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
               className="border-[#dce1f2] bg-white text-[#1d245f] placeholder:text-[#99a1bf] focus-visible:ring-[#8f98d8]"
               required
             />

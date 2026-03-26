@@ -31,6 +31,7 @@ Dokumentasi frontend sekarang dipisah **per fitur/modul**. Gunakan dokumen index
 - **Reservations**: lihat [`fe/reservations.md`](./fe/reservations.md)
 - **Calendar**: lihat [`fe/calendar.md`](./fe/calendar.md)
 - **Pricing**: lihat [`fe/pricing.md`](./fe/pricing.md)
+- **Mock API** (JSON Server): lihat [`fe/mock-api-json-server.md`](./fe/mock-api-json-server.md)
 
 ## Integrasi API
 

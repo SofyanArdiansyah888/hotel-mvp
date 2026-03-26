@@ -1,0 +1,70 @@
+---
+description: UI/UX standards + color palette (Tailwind + shadcn) for apps/web
+globs: apps/web/**
+alwaysApply: false
+---
+
+# UI/UX standards (apps/web)
+
+## Prinsip
+
+- Utamakan **jelas, cepat, konsisten**: satu pola untuk form, tabel, dialog, toast, dan empty state.
+- Gunakan komponen `components/ui/*` (shadcn/ui) untuk primitives (Button, Dialog, Table, etc).
+- Default UX untuk modul hotel: error overlap reservasi harus **jelas** (toast + highlight field tanggal bila relevan).
+
+## Accessibility (wajib)
+
+- Semua input punya `label` yang terhubung (`htmlFor`/`id`) atau `aria-label`.
+- Teks & icon button punya nama aksesibel; jangan hanya ikon tanpa label/tooltip.
+- Fokus keyboard terlihat (jangan hilangkan focus ring).
+- Kontras teks vs background minimal WCAG AA untuk teks normal.
+
+## States standar
+
+- **Loading**: gunakan skeleton untuk tabel/kalender; disable tombol submit + tampilkan spinner.
+- **Empty**: beri judul singkat + aksi utama (mis. “Tambah Room Type”).
+- **Error**:
+  - Field-level: tampilkan inline message di bawah field.
+  - Request-level: toast dengan pesan singkat + detail yang berguna.
+- **Optimistic UI** hanya untuk aksi aman (toggle aktif, update notes), bukan create reservation yang rawan 409.
+
+## Layout & typography
+
+- Gunakan skala spacing konsisten (Tailwind 4/8/12/16/24/32).
+- Lebar konten utama: `max-w-6xl` untuk halaman list; form: `max-w-2xl`.
+- Headings ringkas; hindari paragraf panjang di UI.
+
+# Palette (shadcn/ui tokens)
+
+Gunakan CSS variables ala shadcn/ui (HSL) di `apps/web/src/index.css` atau `globals.css`:
+
+```
+--background: 210 20% 98%;
+--foreground: 222 47% 11%;
+--card: 0 0% 100%;
+--card-foreground: 222 47% 11%;
+--muted: 210 16% 93%;
+--muted-foreground: 215 16% 47%;
+--border: 214 20% 88%;
+--input: 214 20% 88%;
+--ring: 222 84% 55%;
+
+--primary: 222 84% 55%;
+--primary-foreground: 210 40% 98%;
+--secondary: 210 16% 93%;
+--secondary-foreground: 222 47% 11%;
+--accent: 197 88% 48%;
+--accent-foreground: 210 40% 98%;
+
+--destructive: 0 84% 60%;
+--destructive-foreground: 210 40% 98%;
+--success: 142 71% 45%;
+--warning: 38 92% 50%;
+```
+
+## Makna warna (semantic)
+
+- `primary`: aksi utama (Create/Save).
+- `accent`: highlight non-destructive (filter aktif, link penting).
+- `destructive`: delete/cancel/aksi berisiko.
+- `success/warning`: status & feedback (reservation CONFIRMED/PENDING).

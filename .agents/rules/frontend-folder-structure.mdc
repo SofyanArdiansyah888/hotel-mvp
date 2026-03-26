@@ -1,0 +1,47 @@
+---
+description: Frontend folder structure (apps/web) & feature boundaries
+globs: apps/web/**
+alwaysApply: true
+---
+
+# Frontend folder structure (apps/web)
+
+Gunakan struktur target berikut (boleh menyesuaikan, tapi **pemisahan fitur harus jelas**):
+
+```
+apps/web/
+  src/
+    main.tsx
+    app/
+      router.tsx
+      layout/
+    lib/
+      api.ts
+      queryClient.ts
+    features/
+      <feature>/
+        api.ts
+        hooks.ts
+        routes.tsx
+        components/
+    components/
+      ui/   # shadcn/ui
+```
+
+## Aturan penempatan kode
+
+- **`src/app/`**: wiring aplikasi (router, layout, providers). Hindari business logic di sini.
+- **`src/lib/`**: shared infra (HTTP client, queryClient, helpers generik). Tidak boleh bergantung ke `features/*`.
+- **`src/features/<feature>/`**: semua hal spesifik fitur (API calls, query/mutation hooks, route definitions, komponen fitur).
+- **`src/components/ui/`**: komponen shadcn/ui (reuse lintas fitur). Komponen non-shadcn tapi shared taruh di `src/components/`.
+
+## Aturan dependency (boundary)
+
+- Fitur boleh import dari: `features/*` (hanya dirinya), `lib/*`, `components/*`, `components/ui/*`.
+- `lib/*` dan `components/ui/*` **tidak boleh** import dari `features/*`.
+
+## Konvensi file per fitur
+
+- **`api.ts`**: wrapper endpoint fitur (mis. `getRooms`, `createReservation`).
+- **`hooks.ts`**: TanStack Query hooks + invalidate rules untuk fitur tsb.
+- **`routes.tsx`**: route definitions untuk TanStack Router (screen-level).

@@ -19,10 +19,7 @@ export function RoomTypesListPage() {
   const [search, setSearch] = React.useState('')
   const [page, setPage] = React.useState(1)
   const [editing, setEditing] = React.useState<RoomType | null>(null)
-  const [name, setName] = React.useState('')
-  const [capacity, setCapacity] = React.useState('2')
-  const [description, setDescription] = React.useState('')
-  const [isActive, setIsActive] = React.useState(true)
+  const [form, setForm] = React.useState({ name: '', capacity: '2', description: '', isActive: true })
   const [formError, setFormError] = React.useState<string | null>(null)
   const [modalOpen, setModalOpen] = React.useState(false)
 
@@ -38,10 +35,7 @@ export function RoomTypesListPage() {
 
   function resetForm() {
     setEditing(null)
-    setName('')
-    setCapacity('2')
-    setDescription('')
-    setIsActive(true)
+    setForm({ name: '', capacity: '2', description: '', isActive: true })
     setFormError(null)
   }
   function openCreate() {
@@ -51,31 +45,33 @@ export function RoomTypesListPage() {
 
   function loadForEdit(item: RoomType) {
     setEditing(item)
-    setName(item.name)
-    setCapacity(String(item.capacity))
-    setDescription(item.description ?? '')
-    setIsActive(item.isActive)
+    setForm({
+      name: item.name,
+      capacity: String(item.capacity),
+      description: item.description ?? '',
+      isActive: item.isActive,
+    })
     setFormError(null)
     setModalOpen(true)
   }
 
   async function submitForm() {
     setFormError(null)
-    if (!name.trim()) {
+    if (!form.name.trim()) {
       setFormError('Nama wajib diisi.')
       return
     }
-    const parsedCap = Number(capacity)
+    const parsedCap = Number(form.capacity)
     if (!Number.isFinite(parsedCap) || parsedCap <= 0) {
       setFormError('Kapasitas harus angka > 0.')
       return
     }
 
     const payload = {
-      name: name.trim(),
+      name: form.name.trim(),
       capacity: parsedCap,
-      description: description.trim() || undefined,
-      isActive,
+      description: form.description.trim() || undefined,
+      isActive: form.isActive,
     }
 
     try {
@@ -130,7 +126,7 @@ export function RoomTypesListPage() {
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
               Room Type Name
             </label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Deluxe King" />
+            <Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Deluxe King" />
           </div>
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
@@ -138,8 +134,8 @@ export function RoomTypesListPage() {
             </label>
             <Input
               type="number"
-              value={capacity}
-              onChange={(e) => setCapacity(e.target.value)}
+              value={form.capacity}
+              onChange={e => setForm(f => ({ ...f, capacity: e.target.value }))}
               placeholder="2"
             />
           </div>
@@ -148,13 +144,13 @@ export function RoomTypesListPage() {
               Description
             </label>
             <Input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={form.description}
+              onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               placeholder="Deskripsi tipe kamar (opsional)"
             />
           </div>
           <label className="inline-flex items-center gap-2 text-sm text-on-surface-variant md:col-span-2">
-            <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+            <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} />
             Tandai tipe kamar aktif
           </label>
           <div className="md:col-span-2 flex items-center justify-end gap-3 pt-2">
